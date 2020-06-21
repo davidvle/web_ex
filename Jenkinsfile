@@ -1,6 +1,6 @@
 // Obtaining an Artifactory server instance defined in Jenkins:
 			
-def server = Artifactory.server 'Artifactory Version 4.15.0'
+def server = Artifactory.server 'Artifactory Version 7.5.6'
 
 		 //If artifactory is not defined in Jenkins, then create on:
 		// def server = Artifactory.newServer url: 'Artifactory url', username: 'username', password: 'password'
@@ -21,11 +21,10 @@ pipeline {
     stages {
         stage('Clone sources'){
             steps {
-                git url: 'https://github.com/Anusha-DevOp/web_ex'
+                git url: 'https://github.com/davidvle/web_ex.git'
             }
         }
-
-     	stage('SonarQube analysis') {
+       stage('SonarQube analysis') {
 	     steps {
 		//Prepare SonarQube scanner enviornment
 		withSonarQubeEnv('SonarQube6.3') {
@@ -53,7 +52,7 @@ pipeline {
 		
 			rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local', server: server //Defining where the build artifacts should be deployed to
 			
-			rtMaven.resolver releaseRepo:'libs-release', snapshotRepo: 'libs-snapshot', server: server //Defining where Maven Build should download its dependencies from
+			rtMaven.resolver releaseRepo:'libs-release-local', snapshotRepo: 'libs-snapshot-local', server: server //Defining where Maven Build should download its dependencies from
 			
 			rtMaven.deployer.artifactDeploymentPatterns.addExclude("pom.xml") //Exclude artifacts from being deployed
 			
